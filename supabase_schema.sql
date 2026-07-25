@@ -11,23 +11,9 @@ CREATE TABLE IF NOT EXISTS store_content (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 2. Enable Row Level Security (RLS)
-ALTER TABLE store_content ENABLE ROW LEVEL SECURITY;
-
--- 3. Create RLS Policies
--- Allow public read access to store content
-CREATE POLICY "Allow public read access to store_content" 
-  ON store_content FOR SELECT 
-  USING (true);
-
--- Allow public/authenticated insert and update access
-CREATE POLICY "Allow insert access to store_content" 
-  ON store_content FOR INSERT 
-  WITH CHECK (true);
-
-CREATE POLICY "Allow update access to store_content" 
-  ON store_content FOR UPDATE 
-  USING (true);
+-- 2. Disable Row Level Security (RLS) & Grant full privileges
+ALTER TABLE store_content DISABLE ROW LEVEL SECURITY;
+GRANT ALL ON TABLE store_content TO anon, authenticated, service_role, postgres;
 
 -- 4. Seed initial default store content
 INSERT INTO store_content (id, data)

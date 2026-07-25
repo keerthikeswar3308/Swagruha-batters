@@ -119,15 +119,16 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedData),
       });
-      if (res.ok) {
+      const json = await res.json();
+      if (res.ok && json.success) {
         setDbData(updatedData);
         setSaveStatus('✓ Saved successfully!');
-        setTimeout(() => setSaveStatus(''), 3000);
+        setTimeout(() => setSaveStatus(''), 4000);
       } else {
-        setSaveStatus('❌ Error saving changes');
+        setSaveStatus(`❌ ${json.error || 'Error saving changes'}`);
       }
-    } catch (e) {
-      setSaveStatus('❌ Error saving changes');
+    } catch (e: any) {
+      setSaveStatus(`❌ ${e?.message || 'Error saving changes'}`);
     }
   };
 
