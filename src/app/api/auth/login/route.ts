@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
-    const data = getDbData();
+    const data = await getDbData();
     const creds = data.adminCredentials || { username: 'admin', password: 'swagruha@2026' };
 
     if (username === creds.username && password === creds.password) {
@@ -24,6 +24,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: false, error: 'Invalid username or password' }, { status: 401 });
   } catch (error) {
+    console.error('API POST /api/auth/login error:', error);
     return NextResponse.json({ success: false, error: 'Authentication failed' }, { status: 500 });
   }
 }

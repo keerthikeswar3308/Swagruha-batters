@@ -16,7 +16,7 @@ import BackToTop from '@/components/BackToTop';
 import { Metadata } from 'next';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = getDbData();
+  const data = await getDbData();
   const seo = data.seo || {};
 
   return {
@@ -37,10 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const revalidate = 0; // Ensure fresh server side rendering of updated JSON data
+export const revalidate = 0; // Dynamic server-side rendering for persistent data updates
 
-export default function HomePage() {
-  const data = getDbData();
+export default async function HomePage() {
+  const data = await getDbData();
   const siteInfo = data.siteInfo;
   const products = data.products;
   const whyChooseUs = data.whyChooseUs;

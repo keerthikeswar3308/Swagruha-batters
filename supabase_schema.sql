@@ -1,0 +1,379 @@
+-- ========================================================
+-- Swagruha Batters - Supabase SQL Schema & Initial Data
+-- Run this script in your Supabase SQL Editor
+-- ========================================================
+
+-- 1. Create the store_content table
+CREATE TABLE IF NOT EXISTS store_content (
+  id VARCHAR(50) PRIMARY KEY DEFAULT 'main',
+  data JSONB NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. Enable Row Level Security (RLS)
+ALTER TABLE store_content ENABLE ROW LEVEL SECURITY;
+
+-- 3. Create RLS Policies
+-- Allow public read access to store content
+CREATE POLICY "Allow public read access to store_content" 
+  ON store_content FOR SELECT 
+  USING (true);
+
+-- Allow public/authenticated insert and update access
+CREATE POLICY "Allow insert access to store_content" 
+  ON store_content FOR INSERT 
+  WITH CHECK (true);
+
+CREATE POLICY "Allow update access to store_content" 
+  ON store_content FOR UPDATE 
+  USING (true);
+
+-- 4. Seed initial default store content
+INSERT INTO store_content (id, data)
+VALUES (
+  'main',
+  '{
+    "siteInfo": {
+      "brandName": "Swagruha Batters",
+      "tagline": "Taste of Home in Every Batter",
+      "experienceYears": "9+",
+      "heroTitle": "Fresh Idli & Dosa Batter, Made Just Like Home",
+      "heroSubtitle": "Experience naturally fermented batter prepared using carefully selected ingredients that helps you make soft idlis and crispy dosas every single time.",
+      "phonePrimary": "+91 94463 09767",
+      "phoneSecondary": "+91 94446 68856",
+      "email": "swagruhabatters@gmail.com",
+      "primaryAddress": "Store 1: Main Road, Near Junction, Nellore | Store 2: Trunk Road Market, Nellore",
+      "workingHours": "6:00 AM - 9:00 PM (Open All Days)",
+      "aboutTitle": "About Swagruha Batters",
+      "aboutText1": "For over 9+ years, Swagruha Batters has been serving families with fresh, hygienically prepared Idli & Dosa Batter.",
+      "aboutText2": "Every batch is prepared using carefully selected rice, premium urad dal and a pinch of fenugreek following traditional preparation methods.",
+      "aboutText3": "Our naturally fermented batter delivers authentic homemade taste, soft idlis and crispy dosas while saving your valuable time.",
+      "aboutText4": "Quality, freshness and customer satisfaction remain our highest priorities."
+    },
+    "seo": {
+      "title": "Swagruha Batters - Fresh Idli & Dosa Batter | 100% Naturally Fermented",
+      "description": "Swagruha Batters provides fresh, naturally fermented 1KG Idli & Dosa Batter with 9+ years of trusted homemade taste. Visit our stores or call now!",
+      "keywords": "Idli Batter, Dosa Batter, Swagruha Batters, Fresh Batter, Natural Fermentation, South Indian Breakfast, Nellore Batter Store",
+      "ogImage": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=1200&auto=format&fit=crop"
+    },
+    "products": [
+      {
+        "id": "idli-batter-1kg",
+        "name": "Idli Batter",
+        "tagline": "For Super Soft & Fluffy Idlis",
+        "description": "Fresh, naturally fermented batter crafted with premium rice and high-grade urad dal. Guaranteed to make melt-in-your-mouth, cloud-soft idlis every single time.",
+        "weight": "1 KG Only",
+        "price": "₹60",
+        "image": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=1000&auto=format&fit=crop",
+        "inStock": true,
+        "badge": "Daily Fresh Batch",
+        "highlights": [
+          "100% Natural Fermentation",
+          "Zero Preservatives & Soda",
+          "Yields ~20-25 Soft Idlis"
+        ]
+      },
+      {
+        "id": "dosa-batter-1kg",
+        "name": "Dosa Batter",
+        "tagline": "For Crispy Golden & Aromatic Dosas",
+        "description": "Specially milled and fermented batter formulated to produce perfectly golden, thin, crisp dosas with authentic South Indian flavor.",
+        "weight": "1 KG Only",
+        "price": "₹65",
+        "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?q=80&w=1000&auto=format&fit=crop",
+        "inStock": true,
+        "badge": "Bestseller",
+        "highlights": [
+          "Crispy & Golden Texture",
+          "Easy & Smooth Spread",
+          "Yields ~15-18 Crispy Dosas"
+        ]
+      }
+    ],
+    "whyChooseUs": [
+      {
+        "id": "w1",
+        "title": "Freshly Prepared Daily",
+        "desc": "Small batch grinding every single morning to ensure absolute freshness in your kitchen.",
+        "icon": "Clock"
+      },
+      {
+        "id": "w2",
+        "title": "9+ Years Experience",
+        "desc": "Trusted by thousands of families with consistent authentic homemade taste.",
+        "icon": "Award"
+      },
+      {
+        "id": "w3",
+        "title": "Naturally Fermented",
+        "desc": "Traditional overnight slow fermentation without any yeast, chemicals, or soda.",
+        "icon": "Sparkles"
+      },
+      {
+        "id": "w4",
+        "title": "Premium Ingredients",
+        "desc": "Selected aged parboiled rice, whole white urad dal, and pure fenugreek seeds.",
+        "icon": "Leaf"
+      },
+      {
+        "id": "w5",
+        "title": "No Artificial Preservatives",
+        "desc": "100% natural and pure ingredients. Unadulterated food integrity for your family.",
+        "icon": "ShieldCheck"
+      },
+      {
+        "id": "w6",
+        "title": "Hygienically Packed",
+        "desc": "Milled and sealed in immaculate, stainless-steel food-grade environments.",
+        "icon": "CheckCircle"
+      },
+      {
+        "id": "w7",
+        "title": "Soft Idlis",
+        "desc": "Feather-light, fluffy, and tender idlis that stay soft for hours.",
+        "icon": "Sun"
+      },
+      {
+        "id": "w8",
+        "title": "Crispy Dosas",
+        "desc": "Golden-brown, aromatic dosas with perfect restaurant-style crispiness.",
+        "icon": "Zap"
+      },
+      {
+        "id": "w9",
+        "title": "Authentic Homemade Taste",
+        "desc": "Crafted following grandmothers'' age-old recipes for nostalgic traditional flavor.",
+        "icon": "Heart"
+      },
+      {
+        "id": "w10",
+        "title": "Trusted by Hundreds of Families",
+        "desc": "Serving happy households every single morning with warmth and reliability.",
+        "icon": "Users"
+      }
+    ],
+    "ingredients": [
+      {
+        "id": "ing-1",
+        "name": "Selected Rice",
+        "desc": "High quality parboiled and raw rice carefully blended and ground for perfect consistency.",
+        "role": "Structure & Body",
+        "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop"
+      },
+      {
+        "id": "ing-2",
+        "name": "Premium Urad Dal",
+        "desc": "Top-tier whole white urad dal soaked to optimal softness for fluffy texture and rich protein.",
+        "role": "Softness & Fluffiness",
+        "image": "https://images.unsplash.com/photo-1546833999-b9f581a1996d?q=80&w=800&auto=format&fit=crop"
+      },
+      {
+        "id": "ing-3",
+        "name": "Fenugreek Seeds",
+        "desc": "A precise pinch of fenugreek for natural fermentation boost, distinct aroma, and crispiness.",
+        "role": "Fermentation & Aroma",
+        "image": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=800&auto=format&fit=crop"
+      }
+    ],
+    "process": [
+      {
+        "step": 1,
+        "title": "Premium Ingredients Selection",
+        "desc": "Handpicking high quality rice varieties, clean urad dal, and fenugreek."
+      },
+      {
+        "step": 2,
+        "title": "Hygienic Cleaning & Soaking",
+        "desc": "Multi-stage washing with purified water and precise soaking hours."
+      },
+      {
+        "step": 3,
+        "title": "Traditional Stone Grinding",
+        "desc": "Slow-speed stone wet grinding to retain maximum nutrients and smooth texture."
+      },
+      {
+        "step": 4,
+        "title": "Natural Fermentation",
+        "desc": "Overnight natural fermentation under controlled ambient room temperatures."
+      },
+      {
+        "step": 5,
+        "title": "Hygienic Pouch Packing",
+        "desc": "Accurate 1 KG pouch sealing in a clean, sanitized food packaging unit."
+      },
+      {
+        "step": 6,
+        "title": "Ready For Your Kitchen",
+        "desc": "Delivered fresh to our retail stores daily for customers to purchase directly."
+      }
+    ],
+    "storageInstructions": [
+      {
+        "id": "st-1",
+        "title": "Store in Refrigerator",
+        "desc": "Keep the batter refrigerated between 2°C to 5°C immediately after purchase.",
+        "important": true
+      },
+      {
+        "id": "st-2",
+        "title": "Best Consumed Within 1–2 Days",
+        "desc": "For optimal natural sweetness, fluffiness, and ideal acidity levels.",
+        "important": true
+      },
+      {
+        "id": "st-3",
+        "title": "Keep Refrigerated",
+        "desc": "Do not leave batter at room temperature after opening to avoid over-sourness.",
+        "important": false
+      },
+      {
+        "id": "st-4",
+        "title": "Do Not Freeze",
+        "desc": "Freezing breaks the natural air bubbles created during fermentation.",
+        "important": true
+      },
+      {
+        "id": "st-5",
+        "title": "Use Clean Spoon Only",
+        "desc": "Always use a clean, dry stainless steel spoon when scooping batter.",
+        "important": false
+      },
+      {
+        "id": "st-6",
+        "title": "Close Packet Properly",
+        "desc": "Seal the top fold tightly after taking required batter amount.",
+        "important": false
+      }
+    ],
+    "locations": [
+      {
+        "id": "loc-1",
+        "name": "Swagruha Batters - Store 1",
+        "address": "Shop #4, Main Road, Near Bus Stand Junction, Nellore, AP - 524001",
+        "phone": "+91 94463 09767",
+        "mapsUrl": "https://google.com/maps/search/swagruha+batters/@14.4630976,79.9949687,14z",
+        "embedMap": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3863.5042!2d79.9949687!3d14.4630976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDI3JzQ3LjEiTiA3OcKwNTknNDMuMSJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin",
+        "timing": "6:00 AM - 9:00 PM (All Days)"
+      },
+      {
+        "id": "loc-2",
+        "name": "Swagruha Batters - Store 2",
+        "address": "Shop #12, Market Street, Trunk Road Center, Nellore, AP - 524002",
+        "phone": "+91 94446 68856",
+        "mapsUrl": "https://google.com/maps/search/swagruha+batters/@14.44668,79.9788856,14z",
+        "embedMap": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3863.7891!2d79.9788856!3d14.4466800!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTTCsDI2JzQ4LjEiTiA3OcKwNTgnNDQuMCJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin",
+        "timing": "6:00 AM - 9:00 PM (All Days)"
+      }
+    ],
+    "reviews": [
+      {
+        "id": "rev-1",
+        "name": "Srinivas Rao",
+        "rating": 5,
+        "date": "2 days ago",
+        "comment": "The Idli batter is unbelievably soft! Makes idlis just like my grandmother used to make at home. Super clean packaging and friendly store owners.",
+        "verified": true
+      },
+      {
+        "id": "rev-2",
+        "name": "Lakshmi Narayana",
+        "rating": 5,
+        "date": "1 week ago",
+        "comment": "We buy Dosa batter from Swagruha every single weekend. Golden crispy dosas come out perfectly without sticking to the pan. 100% recommended!",
+        "verified": true
+      },
+      {
+        "id": "rev-3",
+        "name": "Priyanka Reddy",
+        "rating": 5,
+        "date": "2 weeks ago",
+        "comment": "Fresh quality every day. No chemical smell or soda sourness. It''s pure, natural batter. Saved me so much grinding time every morning!",
+        "verified": true
+      },
+      {
+        "id": "rev-4",
+        "name": "Kiran Kumar",
+        "rating": 5,
+        "date": "1 month ago",
+        "comment": "Have been buying from Swagruha Batters for over 4 years now. Consistent quality throughout the year. Reasonable price and super clean shop.",
+        "verified": true
+      }
+    ],
+    "faqs": [
+      {
+        "id": "faq-1",
+        "question": "How long can Swagruha batter be stored?",
+        "answer": "Our batter is best consumed within 1 to 2 days when stored in a refrigerator (2°C to 5°C) to enjoy peak fresh flavor and fluffiness."
+      },
+      {
+        "id": "faq-2",
+        "question": "Do you use any artificial preservatives or baking soda?",
+        "answer": "No! Swagruha Batters uses 100% natural ingredients—Selected Rice, Premium Urad Dal, Fenugreek, and Pure Water. We never add preservatives, soda, or yeast."
+      },
+      {
+        "id": "faq-3",
+        "question": "What ingredients are used in your batter?",
+        "answer": "We use carefully chosen parboiled and raw rice, top-grade whole white urad dal, and a pinch of fenugreek seeds for natural fermentation."
+      },
+      {
+        "id": "faq-4",
+        "question": "How should I refrigerate the batter?",
+        "answer": "Place the 1 KG pouch in the main refrigerator shelf (not freezer) immediately after purchase. Always keep the pouch sealed tight."
+      },
+      {
+        "id": "faq-5",
+        "question": "Do you prepare fresh batter every single day?",
+        "answer": "Yes! We grind and naturally ferment fresh batches every night so that fresh 1 KG packs are ready for morning shop purchases."
+      },
+      {
+        "id": "faq-6",
+        "question": "Where are your stores located and how can I buy?",
+        "answer": "We have 2 store locations in Nellore. Simply visit our physical stores or call us directly. We do not provide home delivery."
+      }
+    ],
+    "gallery": [
+      {
+        "id": "g1",
+        "title": "Soft Fluffy Idlis",
+        "category": "Idli",
+        "image": "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=1000&auto=format&fit=crop"
+      },
+      {
+        "id": "g2",
+        "title": "Golden Crispy Dosa",
+        "category": "Dosa",
+        "image": "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?q=80&w=1000&auto=format&fit=crop"
+      },
+      {
+        "id": "g3",
+        "title": "Traditional Stone Grinding",
+        "category": "Process",
+        "image": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=1000&auto=format&fit=crop"
+      },
+      {
+        "id": "g4",
+        "title": "Fresh Batter Texture",
+        "category": "Batter",
+        "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1000&auto=format&fit=crop"
+      },
+      {
+        "id": "g5",
+        "title": "South Indian Breakfast Feast",
+        "category": "Breakfast",
+        "image": "https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?q=80&w=1000&auto=format&fit=crop"
+      },
+      {
+        "id": "g6",
+        "title": "Natural Fenugreek & Urad Dal",
+        "category": "Ingredients",
+        "image": "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?q=80&w=1000&auto=format&fit=crop"
+      }
+    ],
+    "adminCredentials": {
+      "username": "admin",
+      "password": "swagruha@2026"
+    }
+  }'::jsonb
+)
+ON CONFLICT (id) DO NOTHING;
