@@ -18,6 +18,16 @@ interface LocationsProps {
 }
 
 export default function Locations({ locations }: LocationsProps) {
+  const getDirectionsUrl = (loc: LocationItem) => {
+    if (loc.mapsUrl && loc.mapsUrl.includes('dir/?api=1')) {
+      return loc.mapsUrl;
+    }
+    // Formulate official Google Maps directions URL for turn-by-turn navigation
+    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+      loc.name + ' ' + loc.address
+    )}`;
+  };
+
   return (
     <section id="locations" className="py-20 bg-[#FFF8E7] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -88,10 +98,10 @@ export default function Locations({ locations }: LocationsProps) {
                 {/* CTAs (STRICTLY Store Visit / Call / Get Directions) */}
                 <div className="pt-4 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <a
-                    href={loc.mapsUrl}
+                    href={getDirectionsUrl(loc)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#1B5E20] hover:bg-[#2E7D32] text-white font-extrabold text-xs shadow-md transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#1B5E20] hover:bg-[#2E7D32] text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
                   >
                     <Compass className="w-4 h-4 text-[#F9A825]" />
                     Get Directions
@@ -99,17 +109,17 @@ export default function Locations({ locations }: LocationsProps) {
 
                   <a
                     href={`tel:${loc.phone}`}
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#F9A825] hover:bg-[#FBC02D] text-[#1B5E20] font-black text-xs shadow-md transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-[#F9A825] hover:bg-[#FBC02D] text-[#1B5E20] font-black text-xs shadow-md transition-all cursor-pointer"
                   >
                     <Phone className="w-4 h-4" />
                     Call Now
                   </a>
 
                   <a
-                    href={loc.mapsUrl}
+                    href={getDirectionsUrl(loc)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs transition-all cursor-pointer"
                   >
                     <ExternalLink className="w-4 h-4 text-gray-500" />
                     Google Maps

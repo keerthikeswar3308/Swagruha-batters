@@ -79,7 +79,11 @@ export default function ContactFooter({ siteInfo }: ContactFooterProps) {
                 Call Store 1
               </a>
               <a
-                href="#locations"
+                href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+                  siteInfo.brandName + ' ' + siteInfo.primaryAddress
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/10 text-white font-bold text-xs border border-white/20 hover:bg-white/20 transition-colors"
               >
                 <MapPin className="w-4 h-4 text-[#F9A825]" />
