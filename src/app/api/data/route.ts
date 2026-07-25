@@ -1,16 +1,24 @@
 import { NextResponse } from 'next/server';
 import { getDbData, saveDbData } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function GET() {
   try {
     const data = await getDbData();
     // Exclude password from public GET response
     const { adminCredentials, ...publicData } = data;
-    return NextResponse.json(publicData);
-  } catch (error) {
+    return NextResponse.json(publicData, {
+      headers: {
+        'Cache-Control': 'no-store, max-age=0, must-revalidate',
+      },
+    });
+  } catch (error: any) {
     console.error('API GET /api/data error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch database content' },
+      { error: error?.message || 'Failed to fetch database content' },
       { status: 500 }
     );
   }
@@ -29,11 +37,16 @@ export async function POST(request: Request) {
     };
 
     await saveDbData(updatedData);
+
+    // Immediately purge Next.js server cache for live website & admin routes
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin', 'layout');
+
     return NextResponse.json({ success: true, data: updatedData });
-  } catch (error) {
+  } catch (error: any) {
     console.error('API POST /api/data error:', error);
     return NextResponse.json(
-      { error: 'Failed to update database content' },
+      { error: error?.message || 'Failed to update database content' },
       { status: 500 }
     );
   }
