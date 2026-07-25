@@ -756,13 +756,38 @@ export default function AdminPage() {
                     />
                   </div>
 
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 mb-1">Opening Hours / Timing (Editable)</label>
+                      <input
+                        type="text"
+                        value={loc.timing || '6:00 AM - 9:00 PM (All Days)'}
+                        onChange={(e) => handleLocationChange(idx, 'timing', e.target.value)}
+                        className={`w-full p-2.5 text-xs rounded-xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-300'}`}
+                        placeholder="e.g. 6:00 AM - 9:00 PM (All Days)"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 mb-1">Google Maps Direct / Directions Link</label>
+                      <input
+                        type="text"
+                        value={loc.mapsUrl}
+                        onChange={(e) => handleLocationChange(idx, 'mapsUrl', e.target.value)}
+                        className={`w-full p-2.5 text-xs rounded-xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-300'}`}
+                        placeholder="https://maps.google.com/..."
+                      />
+                    </div>
+                  </div>
+
                   <div>
-                    <label className="block text-xs font-bold text-gray-400 mb-1">Google Maps Direct Link</label>
+                    <label className="block text-xs font-bold text-gray-400 mb-1">Google Maps Embed Iframe URL</label>
                     <input
                       type="text"
-                      value={loc.mapsUrl}
-                      onChange={(e) => handleLocationChange(idx, 'mapsUrl', e.target.value)}
+                      value={loc.embedMap || ''}
+                      onChange={(e) => handleLocationChange(idx, 'embedMap', e.target.value)}
                       className={`w-full p-2.5 text-xs rounded-xl border ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-gray-50 border-gray-300'}`}
+                      placeholder="https://www.google.com/maps/embed?..."
                     />
                   </div>
                 </div>
