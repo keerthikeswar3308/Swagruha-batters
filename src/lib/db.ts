@@ -4,85 +4,102 @@ import { supabase, isSupabaseConfigured } from './supabase';
 
 const DB_PATH = path.join(process.cwd(), 'src', 'data', 'db.json');
 
+// In-memory fallback for Vercel when Supabase environment variables are pending setup
+let memoryStore: any = null;
+
 function getLocalFileData() {
+  if (memoryStore) {
+    return memoryStore;
+  }
   try {
     if (fs.existsSync(DB_PATH)) {
       const rawData = fs.readFileSync(DB_PATH, 'utf-8');
-      return JSON.parse(rawData);
+      memoryStore = JSON.parse(rawData);
+      return memoryStore;
     }
   } catch (error) {
     console.error('Error reading local db.json:', error);
   }
-  return null;
+  return memoryStore;
 }
 
 export async function getDbData() {
-  // If Supabase is configured, ALWAYS fetch live content from Supabase
+  // If Supabase is configured, fetch live content from Supabase
   if (isSupabaseConfigured && supabase) {
-    const { data, error } = await supabase
-      .from('store_content')
-      .select('data')
-      .eq('id', 'main')
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('store_content')
+        .select('data')
+        .eq('id', 'main')
+        .single();
 
-    if (!error && data && data.data) {
-      return data.data;
-    }
+      if (!error && data && data.data) {
+        memoryStore = data.data;
+        return data.data;
+      }
 
-    if (error) {
-      console.error(`Supabase SELECT error [${error.code}]: ${error.message}`);
-    }
+      if (error) {
+        console.warn(`Supabase SELECT notice [${error.code}]: ${error.message}`);
+      }
 
-    // If main row does not exist in Supabase yet, seed it automatically from default schema
-    const defaultData = getLocalFileData();
-    if (defaultData) {
-      const { error: seedError } = await supabase.from('store_content').upsert({
-        id: 'main',
-        data: defaultData,
-        updated_at: new Date().toISOString(),
-      });
-      if (!seedError) {
+      // Seed main row to Supabase if table exists but row is missing
+      const defaultData = getLocalFileData();
+      if (defaultData) {
+        await supabase.from('store_content').upsert({
+          id: 'main',
+          data: defaultData,
+          updated_at: new Date().toISOString(),
+        });
         return defaultData;
       }
+    } catch (err: any) {
+      console.warn('Supabase fetch notice, using fallback store:', err?.message);
     }
-
-    throw new Error(`Failed to fetch store content from Supabase: ${error?.message || 'Unknown error'}`);
   }
 
-  // Fallback to local JSON file only when Supabase is not configured (local dev)
+  // Fallback to in-memory store or local file
   const localData = getLocalFileData();
   if (!localData) {
-    throw new Error('Database data could not be loaded from local disk or Supabase');
+    throw new Error('Database data could not be loaded');
   }
   return localData;
 }
 
 export async function saveDbData(data: any) {
-  // If Supabase is configured, ALWAYS save directly to Supabase table
+  // Always update memory store immediately
+  memoryStore = data;
+
+  // If Supabase is configured, save directly to Supabase table
   if (isSupabaseConfigured && supabase) {
-    const { error } = await supabase.from('store_content').upsert({
-      id: 'main',
-      data: data,
-      updated_at: new Date().toISOString(),
-    });
+    try {
+      const { error } = await supabase.from('store_content').upsert({
+        id: 'main',
+        data: data,
+        updated_at: new Date().toISOString(),
+      });
 
-    if (error) {
-      console.error(`Supabase UPSERT error [${error.code}]: ${error.message}`);
-      throw new Error(`Failed to save store content to Supabase: ${error.message}`);
+      if (error) {
+        console.error(`Supabase UPSERT error [${error.code}]: ${error.message}`);
+        throw new Error(`Supabase Save Error: ${error.message}`);
+      }
+
+      return true;
+    } catch (err: any) {
+      console.error('Supabase save error:', err);
+      throw err;
     }
-
-    return true;
   }
 
-  // Fallback to local disk save only when Supabase is not configured (local dev)
+  // Attempt local disk save (works in local dev, gracefully ignored on serverless)
   try {
     const dirPath = path.dirname(DB_PATH);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
     fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
-    return true;
   } catch (err: any) {
-    throw new Error(`Failed to save data to local file: ${err.message}`);
+    console.warn(`Serverless environment file write skipped: ${err?.message}`);
   }
+
+  return true;
 }
