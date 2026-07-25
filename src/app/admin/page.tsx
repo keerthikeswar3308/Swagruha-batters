@@ -493,9 +493,21 @@ export default function AdminPage() {
         {/* Top Header Bar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-6 border-gray-800">
           <div>
-            <span className="text-xs font-bold text-[#F9A825] uppercase tracking-wider">
-              Management Workspace
-            </span>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-bold text-[#F9A825] uppercase tracking-wider">
+                Management Workspace
+              </span>
+              {dbData?.supabaseConfigured ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold text-[10px] flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  Supabase Live Sync Active
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold text-[10px] flex items-center gap-1" title="Add NEXT_PUBLIC_SUPABASE_URL to Vercel Environment Variables for live customer persistence">
+                  ⚠ Vercel: Supabase Env Vars Pending
+                </span>
+              )}
+            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold capitalize">
               {activeTab.replace('-', ' ')}
             </h1>

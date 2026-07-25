@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getDbData, saveDbData } from '@/lib/db';
+import { isSupabaseConfigured } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +11,10 @@ export async function GET() {
     const data = await getDbData();
     // Exclude password from public GET response
     const { adminCredentials, ...publicData } = data;
-    return NextResponse.json(publicData, {
+    return NextResponse.json({
+      ...publicData,
+      supabaseConfigured: isSupabaseConfigured,
+    }, {
       headers: {
         'Cache-Control': 'no-store, max-age=0, must-revalidate',
       },
@@ -42,7 +46,11 @@ export async function POST(request: Request) {
     revalidatePath('/', 'layout');
     revalidatePath('/admin', 'layout');
 
-    return NextResponse.json({ success: true, data: updatedData });
+    return NextResponse.json({
+      success: true,
+      data: updatedData,
+      supabaseConfigured: isSupabaseConfigured,
+    });
   } catch (error: any) {
     console.error('API POST /api/data error:', error);
     return NextResponse.json(
